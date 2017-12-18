@@ -5,16 +5,17 @@
 #include <opencv2/opencv.hpp>
 #include <raspicam/raspicam_cv.h>
 
-class TrackCam(){
+using namespace cv;
+
+class TrackCam{
 	public:
-		TrackCam();
 		~TrackCam();
 
 		bool init();
 		void track();
 	private:
 		//Private Variables
-		raspicam::RaspiCam_cv* camera;
+		raspicam::RaspiCam_Cv* camera;
 		Point vertex[4];
 
 		//Private functions

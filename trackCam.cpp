@@ -9,14 +9,14 @@ using namespace cv;
 
 TrackCam::~TrackCam(){
 	if(camera->open())
-		camera.release();
+		camera->release();
 }
 
 bool TrackCam::init(){
-	*camera = raspicam::RaspiCam_cv();
+	*camera = raspicam::RaspiCam_Cv();
 	if(!camera->open()){
 		cout<<"Camera failed!"<<endl;
-		return False;
+		return false;
 	}
 }
 
@@ -61,13 +61,13 @@ void TrackCam::track(){
 		if(x_ave == -1) cout<<"\r(---, ---)"<<flush;
 		else cout<<"\r("<<x_ave<<", "<<y_ave<<")"<<flush;
 
-		if(x_ave != -1 && x_pre != -1){
-			line(im_track, Point(x_pre, y_pre), Point(x_ave, y_ave), Scalar(0, 255, 0), 5);
+		//if(x_ave != -1 && x_pre != -1){
+		//	line(im_track, Point(x_pre, y_pre), Point(x_ave, y_ave), Scalar(0, 255, 0), 5);
 	}
 }
 
 Rect TrackCam::getBound(){
-	int x_start = min(veretx[0].x, vertex[3].x);
+	int x_start = min(vertex[0].x, vertex[3].x);
 	int y_start = min(vertex[0].y, vertex[1].y);
 	int x_len = max(vertex[1].x - vertex[0].x, vertex[2].x - vertex[3].x);
 	int y_len = max(vertex[3].y - vertex[0].y, vertex[2].y - vertex[1].y);

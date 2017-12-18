@@ -1,7 +1,7 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <raspicam/raspicam_cv.h>
-#include "track.cpp"
+#include "trackCam.cpp"
 
 using namespace std;
 using namespace cv;
