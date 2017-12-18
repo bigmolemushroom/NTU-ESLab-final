@@ -20,8 +20,49 @@ bool TrackCam::init(){
 	}
 }
 
+void TrackCam::calibration(){}
+
 void TrackCam::track(){
-	while(True){
+	Mat im, im_hsv_inv, im_mask;
+	Rect bound = getBound();
+	vector<Point> locations;
+	int x_ave = 0;
+	int y_ave = 0;
+	int x_pre = -1;
+	int y_pre = -1;
+	int pix_num = 0;
+	while(true){
+		//Catch a frame
+		camera->grab();
+		camera->retrieve(im);
+
+		//Crop it
+		im = im(bound);
+
+		//Get the red part
+		cvtColor(~im, im_hsv_inv, COLOR_BGR2HSV);
+		inRange(im_hsv_inv, Scalar(80, 90, 70), Scalar(100, 255, 255), im_mask);
+
+		//Locate the center of the signal
+		findNonZero(im_mask, locations);
+		if(!locations.empty()){
+			pix_num = locations.size();
+			x_ave = y_ave = 0;
+			for(int i=0; i<pix_num; ++i){
+				x_ave += locations[i].x;
+				y_ave += locations[i].y;
+			}
+			x_ave /= pix_num;
+			y_ave /= pix_num;
+		}
+		else x_pre = y_pre = -1;
+		
+		// Print the center of the signal
+		if(x_ave == -1) cout<<"\r(---, ---)"<<flush;
+		else cout<<"\r("<<x_ave<<", "<<y_ave<<")"<<flush;
+
+		if(x_ave != -1 && x_pre != -1){
+			line(im_track, Point(x_pre, y_pre), Point(x_ave, y_ave), Scalar(0, 255, 0), 5);
 	}
 }
 
