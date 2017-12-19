@@ -23,12 +23,12 @@ class TrackCam{
 		Scalar lBound, uBound;
 
 		//Private functions
-		bool getScene();
+		bool setScene();
 		void setVertex();
+		void drawEdge();
+		void setBound();
 		void setParam();
 		void calibration(int, int, float&, float&);
-		Rect getBound();
-		void drawEdge();
 };
 
 #endif //TRACKCAM_H

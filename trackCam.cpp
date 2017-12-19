@@ -23,11 +23,12 @@ bool TrackCam::init(){
 	}
 	lBound = Scalar(80, 80, 60);
 	uBound = Scalar(100, 255, 255);
-	if(!getScene())
+	if(!setScene())
 		return false;
 	setVertex();
 	drawEdge();
-	//setParam();
+	setBound();
+	setParam();
 	return true;
 }
 
@@ -81,7 +82,7 @@ void TrackCam::track(){
 	return;
 }
 
-bool TrackCam::getScene(){
+bool TrackCam::setScene(){
 	Mat im_hsv_inv, im_mask;
 	vector<Point> locations;
 	camera->grab();
@@ -135,6 +136,30 @@ void TrackCam::setVertex(){
 	return;
 }
 
+void TrackCam::drawEdge(){
+	Mat edgeIm = sceneIm;
+
+	line(edgeIm, Point(x[0], y[0]), Point(x[1], y[1]), Scalar(0, 255, 0), 5);
+	line(edgeIm, Point(x[1], y[1]), Point(x[2], y[2]), Scalar(0, 255, 0), 5);
+	line(edgeIm, Point(x[2], y[2]), Point(x[3], y[3]), Scalar(0, 255, 0), 5);
+	line(edgeIm, Point(x[3], y[3]), Point(x[0], y[0]), Scalar(0, 255, 0), 5);
+	
+	imwrite("./edgeIm.jpg", edgeIm);
+
+	return;
+}
+
+void TrackCam::setBound(){
+	int x_start = min(x[0], x[3]);
+	int y_start = min(y[0], y[1]);
+	int x_len = max(x[1] - x[0], x[2] - x[3]);
+	int y_len = max(y[3] - y[0], y[2] - y[1]);
+	
+	bound = Rect(x_start, y_start, x_len, y_len);
+
+	return;
+}
+
 void TrackCam::setParam(){
 	bx0 = x[0] - x[1] + x[2] - x[3];
 	bx1 = x[0] - x[1];
@@ -157,28 +182,6 @@ void TrackCam::calibration(int x_t, int y_t, float &lamx, float &lamy){
 	if(lamx > 1 || lamx < 0)
 		lamx = (- b - sq) / (2 * a);
 	lamy = (bx1 * lamx - (x[0] - x_t)) / (bx0 * lamx - bx2);
-
-	return;
-}
-
-Rect TrackCam::getBound(){
-	int x_start = min(x[0], x[3]);
-	int y_start = min(y[0], y[1]);
-	int x_len = max(x[1] - x[0], x[2] - x[3]);
-	int y_len = max(y[3] - y[0], y[2] - y[1]);
-	
-	return Rect(x_start, y_start, x_len, y_len);
-}
-
-void TrackCam::drawEdge(){
-	Mat edgeIm = sceneIm;
-
-	line(edgeIm, Point(x[0], y[0]), Point(x[1], y[1]), Scalar(0, 255, 0), 5);
-	line(edgeIm, Point(x[1], y[1]), Point(x[2], y[2]), Scalar(0, 255, 0), 5);
-	line(edgeIm, Point(x[2], y[2]), Point(x[3], y[3]), Scalar(0, 255, 0), 5);
-	line(edgeIm, Point(x[3], y[3]), Point(x[0], y[0]), Scalar(0, 255, 0), 5);
-	
-	imwrite("./edgeIm.jpg", edgeIm);
 
 	return;
 }
