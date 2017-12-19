@@ -16,6 +16,7 @@ class TrackCam{
 	private:
 		//Private Variables
 		raspicam::RaspiCam_Cv* camera;
+		Mat sceneIm;
 		int x[4], y[4];	//Observed positions of the screen's vertices
 		int width, height;	//Screen size
 		int bx0, bx1, bx2, by0, by1, by2;
@@ -25,6 +26,7 @@ class TrackCam{
 		void setParam();
 		void calibration(int, int, float&, float&);
 		Rect getBound();
+		void drawEdge();
 };
 
 #endif //TRACKCAM_H

@@ -19,7 +19,10 @@ bool TrackCam::init(){
 		cout<<"Camera failed!"<<endl;
 		return false;
 	}
-	//setVertex();
+	camera->grab();
+	camera->retrieve(sceneIm);
+	setVertex();
+	drawEdge();
 	//setParam();
 	return true;
 }
@@ -76,13 +79,10 @@ void TrackCam::track(){
 
 void TrackCam::setVertex(){
 	for(int i=0; i<4; ++i){
-		while(true){
+		bool end = false
+		while(!end){
 			Mat im, im_hsv_inv, im_mask;
 			vector<Point> locations;
-			int x_ave = 0;
-			int y_ave = 0;
-			int x_pre = -1;
-			int y_pre = -1;
 			int pix_num = 0;
 			for(int s=5; s>0; --s){
 				cout<<"\rCapturing calibration point "<<i<<" in: "<<s<<flush;
@@ -96,15 +96,14 @@ void TrackCam::setVertex(){
 			findNonZero(im_mask, locations);
 			if(!locations.empty()){
 				pix_num = locations.size();
-				x_ave = y_ave = 0;
-				for(int i=0; i<pix_num; ++i){
-					x_ave += locations[i].x;
-					y_ave += locations[i].y;
+				for(int j=0; j<pix_num; ++j){
+					x[i] += locations[j].x;
+					y[i] += locations[j].y;
 				}
-				x_ave /= pix_num;
-				y_ave /= pix_num;
+				x[i] /= pix_num;
+				y[i] /= pix_num;
+				cout<<"Vertex "<<i<<" at ("<<x[i]<<", "<<y[i]<<")"<<endl;
 			}
-			else x_ave = y_ave = -1;
 		}
 	}
 
@@ -144,6 +143,19 @@ Rect TrackCam::getBound(){
 	int y_len = max(y[3] - y[0], y[2] - y[1]);
 	
 	return Rect(x_start, y_start, x_len, y_len);
+}
+
+void TrackCam::drawEdge(){
+	Mat edgeIm = sceneIm;
+
+	line(edgeIm, Point(x[0], y[0]), Point(x[1], y[1]), Scalar(0, 255, 0), 5);
+	line(edgeIm, Point(x[1], y[1]), Point(x[2], y[2]), Scalar(0, 255, 0), 5);
+	line(edgeIm, Point(x[2], y[2]), Point(x[3], y[3]), Scalar(0, 255, 0), 5);
+	line(edgeIm, Point(x[3], y[3]), Point(x[0], y[0]), Scalar(0, 255, 0), 5);
+	
+	imwrite("./edgeIm.jpg", edgeIm);
+
+	return;
 }
 
 		
