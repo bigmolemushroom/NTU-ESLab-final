@@ -44,7 +44,7 @@ void TrackCam::track(){
 
 		//Get the red part
 		cvtColor(~im, im_hsv_inv, COLOR_BGR2HSV);
-		inRange(im_hsv_inv, Scalar(80, 90, 70), Scalar(100, 255, 255), im_mask);
+		inRange(im_hsv_inv, Scalar(80, 50, 30), Scalar(100, 255, 255), im_mask);
 
 		//Locate the center of the signal
 		findNonZero(im_mask, locations);
@@ -76,7 +76,7 @@ void TrackCam::track(){
 
 void TrackCam::setVertex(){
 	for(int i=0; i<4; ++i){
-		while(){
+		while(true){
 			Mat im, im_hsv_inv, im_mask;
 			vector<Point> locations;
 			int x_ave = 0;
