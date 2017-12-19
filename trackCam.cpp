@@ -21,7 +21,7 @@ bool TrackCam::init(){
 		cout<<"Camera failed!"<<endl;
 		return false;
 	}
-	lBound = Scalar(80, 50, 30);
+	lBound = Scalar(80, 80, 60);
 	uBound = Scalar(100, 255, 255);
 	if(!getScene())
 		return false;
