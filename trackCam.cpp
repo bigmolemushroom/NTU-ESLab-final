@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <chrono>
+#include <thread>
 #include <opencv2/opencv.hpp>
 #include <raspicam/raspicam_cv.h>
 #include "trackCam.h"
@@ -85,13 +87,14 @@ void TrackCam::setVertex(){
 			vector<Point> locations;
 			int pix_num = 0;
 			for(int s=5; s>0; --s){
-				cout<<"\rCapturing calibration point "<<i<<" in: "<<s<<flush;
+				cout<<"\rCapturing calibration point "<<s<<" in: "<<s<<flush;
+				this_thread::sleep_for(chrono::seconds(1));
 			}
 			camera->grab();
 			camera->retrieve(im);
 
 			cvtColor(~im, im_hsv_inv, COLOR_BGR2HSV);
-			inRange(im_hsv_inv, Scalar(80, 90, 70), Scalar(100, 255, 255), im_mask);
+			inRange(im_hsv_inv, Scalar(80, 50, 30), Scalar(100, 255, 255), im_mask);
 
 			findNonZero(im_mask, locations);
 			if(!locations.empty()){
