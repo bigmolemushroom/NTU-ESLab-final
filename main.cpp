@@ -11,6 +11,7 @@ TrackCam* trackCam = new TrackCam();
 int main(int argc, char **argv){
 	if(!trackCam->init())
 		return -1;
+	cout<<"fine."<<endl;
 	trackCam->track();
 
 	return 0;

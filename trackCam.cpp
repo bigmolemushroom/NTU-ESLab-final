@@ -14,14 +14,14 @@ TrackCam::~TrackCam(){
 }
 
 bool TrackCam::init(){
-	*camera = raspicam::RaspiCam_Cv();
+	camera = new raspicam::RaspiCam_Cv;
 	if(!camera->open()){
 		cout<<"Camera failed!"<<endl;
 		return false;
 	}
 	//setVertex();
 	//setParam();
-
+	return true;
 }
 
 void TrackCam::track(){
@@ -58,7 +58,7 @@ void TrackCam::track(){
 			x_ave /= pix_num;
 			y_ave /= pix_num;
 		}
-		else x_pre = y_pre = -1;
+		else x_ave = y_ave = -1;
 		
 		// Print the center of the signal
 		if(x_ave == -1) cout<<"\r(---, ---)"<<flush;
@@ -66,6 +66,10 @@ void TrackCam::track(){
 
 		//if(x_ave != -1 && x_pre != -1){
 		//	line(im_track, Point(x_pre, y_pre), Point(x_ave, y_ave), Scalar(0, 255, 0), 5);
+
+		//Set x_pre , y_pre
+		x_pre = x_ave;
+		y_pre = y_ave;
 	}
 	return;
 }
@@ -94,19 +98,19 @@ void TrackCam::calibration(int x_t, int y_t, float &lamx, float &lamy){
 
 	float sq = sqrt(b * b - 4 * a * c);
 
-	float lamx = (- b + sq) / (2 * a);
-	if(sol > 1 || sol < 0)
-		sol = (- b - sq) / (2 * a);
-	float lamy = (bx1 * lamx - (x[0] - x_t)) / (bx0 * lamx - bx2);
+	lamx = (- b + sq) / (2 * a);
+	if(lamx > 1 || lamx < 0)
+		lamx = (- b - sq) / (2 * a);
+	lamy = (bx1 * lamx - (x[0] - x_t)) / (bx0 * lamx - bx2);
 
 	return;
 }
 
 Rect TrackCam::getBound(){
-	int x_start = min(vertex[0].x, vertex[3].x);
-	int y_start = min(vertex[0].y, vertex[1].y);
-	int x_len = max(vertex[1].x - vertex[0].x, vertex[2].x - vertex[3].x);
-	int y_len = max(vertex[3].y - vertex[0].y, vertex[2].y - vertex[1].y);
+	int x_start = min(x[0], x[3]);
+	int y_start = min(y[0], y[1]);
+	int x_len = max(x[1] - x[0], x[2] - x[3]);
+	int y_len = max(y[3] - y[0], y[2] - y[1]);
 	
 	return Rect(x_start, y_start, x_len, y_len);
 }

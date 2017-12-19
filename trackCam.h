@@ -23,7 +23,7 @@ class TrackCam{
 		//Private functions
 		void setVertex();
 		void setParam();
-		void calibration(int, int, float, float);
+		void calibration(int, int, float&, float&);
 		Rect getBound();
 };
 
