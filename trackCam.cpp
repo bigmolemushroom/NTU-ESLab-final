@@ -21,8 +21,7 @@ bool TrackCam::init(){
 		cout<<"Camera failed!"<<endl;
 		return false;
 	}
-	camera->grab();
-	camera->retrieve(sceneIm);
+	getScene();
 	setVertex();
 	drawEdge();
 	//setParam();
@@ -77,6 +76,12 @@ void TrackCam::track(){
 		y_pre = y_ave;
 	}
 	return;
+}
+
+void TrackCam::getScene(){
+	camera->grab();
+	camera->retrieve(sceneIm);
+	imwrite("./sceneIm.jpg", sceneIm);
 }
 
 void TrackCam::setVertex(){

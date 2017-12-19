@@ -22,6 +22,7 @@ class TrackCam{
 		int bx0, bx1, bx2, by0, by1, by2;
 
 		//Private functions
+		void getScene();
 		void setVertex();
 		void setParam();
 		void calibration(int, int, float&, float&);
