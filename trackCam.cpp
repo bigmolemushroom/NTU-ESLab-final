@@ -40,7 +40,7 @@ void TrackCam::track(){
 		camera->retrieve(im);
 
 		//Crop it
-		im = im(bound);
+		//im = im(bound);
 
 		//Get the red part
 		cvtColor(~im, im_hsv_inv, COLOR_BGR2HSV);
@@ -75,7 +75,38 @@ void TrackCam::track(){
 }
 
 void TrackCam::setVertex(){
-	//
+	for(int i=0; i<4; ++i){
+		while(){
+			Mat im, im_hsv_inv, im_mask;
+			vector<Point> locations;
+			int x_ave = 0;
+			int y_ave = 0;
+			int x_pre = -1;
+			int y_pre = -1;
+			int pix_num = 0;
+			for(int s=5; s>0; --s){
+				cout<<"\rCapturing calibration point "<<i<<" in: "<<s<<flush;
+			}
+			camera->grab();
+			camera->retrieve(im);
+
+			cvtColor(~im, im_hsv_inv, COLOR_BGR2HSV);
+			inRange(im_hsv_inv, Scalar(80, 90, 70), Scalar(100, 255, 255), im_mask);
+
+			findNonZero(im_mask, locations);
+			if(!locations.empty()){
+				pix_num = locations.size();
+				x_ave = y_ave = 0;
+				for(int i=0; i<pix_num; ++i){
+					x_ave += locations[i].x;
+					y_ave += locations[i].y;
+				}
+				x_ave /= pix_num;
+				y_ave /= pix_num;
+			}
+			else x_ave = y_ave = -1;
+		}
+	}
 
 	return;
 }
