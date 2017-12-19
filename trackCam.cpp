@@ -95,7 +95,7 @@ bool TrackCam::getScene(){
 	findNonZero(im_mask, locations);
 	if(!locations.empty()){
 		cout<<"Dirty Scene!"<<endl;
-		return false
+		return false;
 	}
 	return true;
 }
