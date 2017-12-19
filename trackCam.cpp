@@ -19,11 +19,15 @@ bool TrackCam::init(){
 		cout<<"Camera failed!"<<endl;
 		return false;
 	}
+	//setVertex();
+	//setParam();
+
 }
 
 void TrackCam::track(){
 	Mat im, im_hsv_inv, im_mask;
-	Rect bound = getBound();
+	//Rect bound = getBound();
+	Rect bound = Rect(600, 300, 400, 500);
 	vector<Point> locations;
 	int x_ave = 0;
 	int y_ave = 0;
@@ -63,24 +67,27 @@ void TrackCam::track(){
 		//if(x_ave != -1 && x_pre != -1){
 		//	line(im_track, Point(x_pre, y_pre), Point(x_ave, y_ave), Scalar(0, 255, 0), 5);
 	}
+	return;
 }
 
 void TrackCam::setVertex(){
 	//
+
+	return;
 }
 
 void TrackCam::setParam(){
-	bx0 = x[0] - x[1] + x[2] - x[3]
-	bx1 = x[0] - x[1]
-	bx2 = x[0] - x[3]
-	by0 = y[0] - y[1] + y[2] - y[3]
-	by1 = y[0] - y[1]
-	by2 = y[0] - y[3]
+	bx0 = x[0] - x[1] + x[2] - x[3];
+	bx1 = x[0] - x[1];
+	bx2 = x[0] - x[3];
+	by0 = y[0] - y[1] + y[2] - y[3];
+	by1 = y[0] - y[1];
+	by2 = y[0] - y[3];
+
+	return;
 }
 
-int* TrackCam::calibration(int x_t, int y_t){
-	int lamx, lamy;
-
+void TrackCam::calibration(int x_t, int y_t, float &lamx, float &lamy){
 	float a = float(bx1 * by0 - bx0 * by1);
 	float b = float(- by0 * (x[0] - x_t) + bx0 * (y[0] - y_t) + bx2 * by1 - bx1 * by2);
 	float c = float(by2 * (x[0] - x_t) - bx2 * (y[0] - y_t));
@@ -92,7 +99,7 @@ int* TrackCam::calibration(int x_t, int y_t){
 		sol = (- b - sq) / (2 * a);
 	float lamy = (bx1 * lamx - (x[0] - x_t)) / (bx0 * lamx - bx2);
 
-
+	return;
 }
 
 Rect TrackCam::getBound(){
