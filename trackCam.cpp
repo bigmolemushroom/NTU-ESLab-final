@@ -79,7 +79,7 @@ void TrackCam::track(){
 
 void TrackCam::setVertex(){
 	for(int i=0; i<4; ++i){
-		bool end = false
+		bool end = false;
 		while(!end){
 			Mat im, im_hsv_inv, im_mask;
 			vector<Point> locations;
