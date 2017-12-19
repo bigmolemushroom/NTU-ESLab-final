@@ -20,9 +20,10 @@ class TrackCam{
 		int x[4], y[4];	//Observed positions of the screen's vertices
 		int width, height;	//Screen size
 		int bx0, bx1, bx2, by0, by1, by2;
+		Scalar lBound, uBound;
 
 		//Private functions
-		void getScene();
+		bool getScene();
 		void setVertex();
 		void setParam();
 		void calibration(int, int, float&, float&);

@@ -21,7 +21,10 @@ bool TrackCam::init(){
 		cout<<"Camera failed!"<<endl;
 		return false;
 	}
-	getScene();
+	lBound = Scalar(80, 50, 30);
+	uBound = Scalar(100, 255, 255);
+	if(!getScene())
+		return false;
 	setVertex();
 	drawEdge();
 	//setParam();
@@ -48,7 +51,7 @@ void TrackCam::track(){
 
 		//Get the red part
 		cvtColor(~im, im_hsv_inv, COLOR_BGR2HSV);
-		inRange(im_hsv_inv, Scalar(80, 50, 30), Scalar(100, 255, 255), im_mask);
+		inRange(im_hsv_inv, lBound, uBound, im_mask);
 
 		//Locate the center of the signal
 		findNonZero(im_mask, locations);
@@ -78,10 +81,23 @@ void TrackCam::track(){
 	return;
 }
 
-void TrackCam::getScene(){
+bool TrackCam::getScene(){
+	Mat im_hsv_inv, im_mask;
+	vector<Point> locations;
 	camera->grab();
 	camera->retrieve(sceneIm);
 	imwrite("./sceneIm.jpg", sceneIm);
+
+	cvtColor(~sceneIm, im_hsv_inv, COLOR_BGR2HSV);
+	inRange(im_hsv_inv, lBound, uBound, im_mask);
+	imwrite("./sceneIm_mask.jpg", im_mask);
+
+	findNonZero(im_mask, locations);
+	if(!locations.empty()){
+		cout<<"Dirty Scene!"<<endl;
+		return false
+	}
+	return true;
 }
 
 void TrackCam::setVertex(){
@@ -99,7 +115,7 @@ void TrackCam::setVertex(){
 			camera->retrieve(im);
 
 			cvtColor(~im, im_hsv_inv, COLOR_BGR2HSV);
-			inRange(im_hsv_inv, Scalar(80, 50, 30), Scalar(100, 255, 255), im_mask);
+			inRange(im_hsv_inv, lBound, uBound, im_mask);
 
 			findNonZero(im_mask, locations);
 			if(!locations.empty()){
