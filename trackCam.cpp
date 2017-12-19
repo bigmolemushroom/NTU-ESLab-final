@@ -87,7 +87,7 @@ void TrackCam::setVertex(){
 			vector<Point> locations;
 			int pix_num = 0;
 			for(int s=5; s>0; --s){
-				cout<<"\rCapturing calibration point "<<s<<" in: "<<s<<flush;
+				cout<<"\rCapturing calibration point "<<i<<" in: "<<s<<flush;
 				this_thread::sleep_for(chrono::seconds(1));
 			}
 			camera->grab();
@@ -105,7 +105,8 @@ void TrackCam::setVertex(){
 				}
 				x[i] /= pix_num;
 				y[i] /= pix_num;
-				cout<<"Vertex "<<i<<" at ("<<x[i]<<", "<<y[i]<<")"<<endl;
+				cout<<"\rVertex "<<i<<" at ("<<x[i]<<", "<<y[i]<<")                   "<<endl;
+				end = true;
 			}
 		}
 	}
